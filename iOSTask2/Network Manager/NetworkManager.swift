@@ -26,6 +26,19 @@ class NetworkManager: Managing {
     
     private var urlSession = URLSession.shared
     
+    func getAPIKey() -> String {
+        guard let filePath = Bundle.main.path(forResource: "Keys", ofType: "plist") else {
+              fatalError("Couldn't find file")
+            }
+        let plist = NSDictionary(contentsOfFile: filePath)
+           guard let value = plist?.object(forKey: "API_KEY") as? String else {
+             fatalError("Couldn't find key 'API_KEY'")
+           }
+        if (value.starts(with: "_")) {
+              fatalError("")
+            }
+        return value
+    }
     func getAllNominations(completion: @escaping (Result<NominationData, ErrorType>) -> Void) {
         let urlString = Endpoints.getAllNominations.rawValue
         
@@ -36,7 +49,7 @@ class NetworkManager: Managing {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         
-        urlRequest.addValue("Bearer 324|cbnVDp6kwIo4lzTVrdoKvBU9CgcQyGwIf7xDlMtpc4b250a4", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue(getAPIKey(), forHTTPHeaderField: "Authorization")
         print("GET URL: \(url)")
         
             urlSession.dataTask(with: urlRequest) { data, response, error in
@@ -73,7 +86,7 @@ class NetworkManager: Managing {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         
-        urlRequest.addValue("Bearer 324|cbnVDp6kwIo4lzTVrdoKvBU9CgcQyGwIf7xDlMtpc4b250a4", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue(getAPIKey(), forHTTPHeaderField: "Authorization")
         print("GET URL: \(url)")
         
             urlSession.dataTask(with: urlRequest) { data, response, error in
@@ -112,7 +125,7 @@ class NetworkManager: Managing {
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        urlRequest.addValue("Bearer 324|cbnVDp6kwIo4lzTVrdoKvBU9CgcQyGwIf7xDlMtpc4b250a4", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue(getAPIKey(), forHTTPHeaderField: "Authorization")
         if let data = data {
             urlRequest.httpBody = data
             print("POST URL DATA: \(String(data: data, encoding: .utf8) ?? "")")
@@ -164,7 +177,7 @@ class NetworkManager: Managing {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "DELETE"
         
-        urlRequest.addValue("Bearer 324|cbnVDp6kwIo4lzTVrdoKvBU9CgcQyGwIf7xDlMtpc4b250a4", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue(getAPIKey(), forHTTPHeaderField: "Authorization")
         print("GET URL: \(url)")
         
             urlSession.dataTask(with: urlRequest) { data, response, error in
